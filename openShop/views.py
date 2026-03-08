@@ -145,6 +145,7 @@ class ProductDetail(APIView):
             "stock": data["stock"],
             "is_available": data["is_available"],
             "picture": data["picture"],
+            "is_delete": product.is_delete,
             "_links": self._build_links(request, data["id"]),
         }
         return Response(response_body, status=status.HTTP_200_OK)
@@ -184,6 +185,25 @@ class ProductDetail(APIView):
             "stock": data["stock"],
             "is_available": data["is_available"],
             "picture": data["picture"],
+            "is_delete": product.is_delete,
             "_links": self._build_links(request, data["id"]),
         }
         return Response(response_body, status=status.HTTP_200_OK)
+
+    def delete(self, request, product_id):
+        try:
+            uuid_product_id = UUID(product_id)
+        except ValueError:
+            return Response(
+                {"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        product = Product.objects.filter(id=uuid_product_id).first()
+        if not product:
+            return Response(
+                {"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        product.is_delete = True
+        product.save(update_fields=["is_delete"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
