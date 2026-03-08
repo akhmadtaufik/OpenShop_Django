@@ -12,3 +12,8 @@ Pipfile.lock
 # VS Code
 .vscode/
 
+# Docker
+.dockerignore
+
+# Postman
+Postman/
