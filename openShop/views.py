@@ -148,3 +148,42 @@ class ProductDetail(APIView):
             "_links": self._build_links(request, data["id"]),
         }
         return Response(response_body, status=status.HTTP_200_OK)
+
+    def put(self, request, product_id):
+        try:
+            uuid_product_id = UUID(product_id)
+        except ValueError:
+            return Response(
+                {"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        product = Product.objects.filter(id=uuid_product_id).first()
+        if not product:
+            return Response(
+                {"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = ProductSerializer(product, data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer.save()
+        data = serializer.data
+        response_body = {
+            "id": data["id"],
+            "name": data["name"],
+            "shop": data["shop"],
+            "price": data["price"],
+            "sku": data["sku"],
+            "description": data["description"],
+            "location": data["location"],
+            "discount": data["discount"],
+            "category": data["category"],
+            "stock": data["stock"],
+            "is_available": data["is_available"],
+            "picture": data["picture"],
+            "_links": self._build_links(request, data["id"]),
+        }
+        return Response(response_body, status=status.HTTP_200_OK)
