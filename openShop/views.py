@@ -61,6 +61,17 @@ class ProductList(APIView):
 
     def get(self, request):
         products = Product.objects.all()
+        name_keyword = request.query_params.get("name")
+        location_keyword = request.query_params.get("location")
+
+        if name_keyword:
+            products = products.filter(name__icontains=name_keyword)
+
+        if location_keyword:
+            products = products.filter(
+                location__icontains=location_keyword
+            )
+
         serializer = ProductSerializer(products, many=True)
         response_products = [
             self._build_product_response(request, item)
