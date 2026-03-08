@@ -1,0 +1,11 @@
+[tool.ruff]
+# Mengatur batas karakter sesuai permintaanmu
+line-length = 79
+
+# Mengaktifkan aturan linter tambahan (Pyflakes, pycodestyle)
+select = ["E", "F", "I"]
+
+[tool.ruff.format]
+# Memastikan formatter menggunakan single quotes atau double quotes secara konsisten
+quote-style = "double"
+indent-style = "space"
